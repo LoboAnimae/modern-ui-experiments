@@ -1,33 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import './App.css'
+import { gsap } from 'gsap'
+
+
+const fadeInScreen = async (timeline?: gsap.core.Timeline) => {
+  timeline ??= gsap.timeline()
+  timeline.fromTo('.container', { background: 'white' }, {
+    background: 'linear-gradient(325deg, rgba(0, 0, 0, 1) 0%, rgba(148, 148, 148, 1) 77%, rgba(255, 255, 255, 1) 100%)',
+    duration: .5
+  })
+  timeline.fromTo('.screen-container', { opacity: 0 }, {
+    opacity: 1,
+    duration: 0.5,
+  }, "+=1")
+
+  timeline.to('.screen', {
+    background: 'white',
+    duration: .5
+  }, '+=.5')
+
+}
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  useLayoutEffect(() => {
+    let ctx = gsap.context(async () => {
+      const timeline = gsap.timeline()
+      await fadeInScreen(timeline)
+
+    })
+
+    return () => ctx.revert()
+  }, [])
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div
+      className='container'>
+      {/*<div className='as-old-phone'>*/}
+      {/*  <div id='screen'></div>*/}
+      {/*</div>*/}
+      <div className='screen-container'>
+        <div className='screen'>
+          <h1 className='title design-title'>Design is</h1>
+          <h1 className='title convenience'>Convenience</h1>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
   )
 }
